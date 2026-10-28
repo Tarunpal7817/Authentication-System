@@ -1,5 +1,6 @@
 import { Router } from "express";
 import * as authController from "../controllers/auth.controller.js"
+import { authMiddleware } from "../middlewares/auth.middleware.js";
 
 const authRouter = Router();
 
@@ -19,7 +20,7 @@ authRouter.post("/login", authController.login)
 /**
  * GET /api/auth/get-me
  */
-authRouter.get("/get-me", authController.getMe)
+authRouter.get("/get-me", authMiddleware, authController.getMe)
 
 
 /**
@@ -44,6 +45,8 @@ authRouter.get("/logout-all", authController.logoutAll)
  * GET /api/auth/verify-email
  */
 
-authRouter.get("/verify-email", authController.verifyEmail)
+authRouter.post("/verify-email", authController.verifyEmail)
+
+authRouter.post("/resend-otp", authController.resendOtp);
 
 export default authRouter;

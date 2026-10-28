@@ -25,19 +25,17 @@ transporter.verify((error, success) => {
 // Function to send email
 
 export const sendEmail = async (to, subject, text, html) => {
-  try {
     const info = await transporter.sendMail({
-      from: `"Your Name" <${config.GOOGLE_USER}>`, // sender address
-      to, // list of receivers
-      subject, // Subject line
-      text, // plain text body
-      html, // html body
+        from: `"Auth App" <${config.GOOGLE_USER}>`,
+        to,
+        subject,
+        text,
+        html
     });
 
-    console.log('Message sent: %s', info.messageId);
-    console.log('Preview URL: %s', nodemailer.getTestMessageUrl(info));
-  } catch (error) {
-    console.error('Error sending email:', error);
-  }
+    console.log("Email sent successfully:", info.messageId);
+
+    return info;
 };
+
 
