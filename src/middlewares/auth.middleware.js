@@ -1,7 +1,9 @@
+
 import jwt from "jsonwebtoken";
 import config from "../config/config.js";
+import sessionModel from "../models/session.model.js";
 
-export function authMiddleware(req, res, next) {
+export async function authMiddleware(req, res, next) {
     try {
         const authHeader = req.headers.authorization;
 
@@ -24,12 +26,32 @@ export function authMiddleware(req, res, next) {
             config.JWT_SECRET
         );
 
+        if (!decoded.id || !decoded.sessionId) {
+            return res.status(401).json({
+                message: "Invalid access token"
+            });
+        }
+
+        // Check whether the session exists and is active
+        const session = await sessionModel.findOne({
+            _id: decoded.sessionId,
+            user: decoded.id,
+            revoked: false
+        });
+
+        if (!session) {
+            return res.status(401).json({
+                message: "Session is invalid or has been revoked"
+            });
+        }
+
         req.user = {
             id: decoded.id,
-            sessionId: decoded.sessionId
+            sessionId: session._id
         };
 
         next();
+
     } catch (error) {
         if (
             error.name === "TokenExpiredError" ||
