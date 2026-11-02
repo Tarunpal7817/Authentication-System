@@ -1,2 +1,13 @@
+# Environment variables
 .env
+.env.*
+!.env.example
+
+# ZIP files
+*.zip
+
+# Dependencies
 node_modules/
+
+# Build files
+dist/
